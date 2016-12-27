@@ -31,6 +31,11 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  /*
+   设置启动图片时间
+   */
+  [NSThread sleepForTimeInterval:3.0];
   return YES;
 }
 
