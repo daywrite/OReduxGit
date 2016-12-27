@@ -13,7 +13,7 @@ export default class Index extends Component {
     }
     render() {
         return (
-            <Text>123</Text>
+            <Text>1234564564564564</Text>
         )
     }
 }

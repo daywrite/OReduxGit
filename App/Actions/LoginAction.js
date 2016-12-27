@@ -6,7 +6,7 @@ import * as types from '../common/ActionTypes';
 export function performLoginAction() {
     return dispatch => {
         dispatch(performLogin());
-        dispatch(receiveLoginResult(null));
+        dispatch(receiveLoginResult({result: 1}));
     }
 }
 function performLogin() {

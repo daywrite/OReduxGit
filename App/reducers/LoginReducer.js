@@ -14,7 +14,7 @@ export default function login(state = initialState, action) {
         case types.RECEIVE_LOGIN_ACTION:
             return Object.assign({}, state, {
                 loading: false,
-                data: action.result
+                data: action.data.result
             });
         default:
             return state;

@@ -31,13 +31,13 @@ class Index extends Component {
     _login() {
         const {navigator, dispatch} = this.props;
         dispatch(performLoginAction());
-        //this._loginSuccess();
+        this._loginSuccess();
     }
     _loginSuccess() {
-        // const {navigator} = this.props;
-        // if (navigator) {
-        //     navigator.push({name: '', navigationBarHidden: true, component: Home})
-        // }
+        const {navigator} = this.props;
+        if (navigator) {
+            navigator.push({name: '', navigationBarHidden: true, component: Home})
+        }
     }
     _resgister() {
         const {navigator} = this.props;
@@ -47,6 +47,7 @@ class Index extends Component {
     }
     render() {
         const {login} = this.props;
+        console.log(login);
         return (
             <View style={styles.container}>
                 <Image style={styles.bg} source={LOGIN_BG}/>
