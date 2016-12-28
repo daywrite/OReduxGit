@@ -30,7 +30,7 @@ class Index extends Component {
     }
     _login() {
         const {navigator, dispatch} = this.props;
-        dispatch(performLoginAction());
+        dispatch(performLoginAction('13301160072', '123456'));
         this._loginSuccess();
     }
     _loginSuccess() {
