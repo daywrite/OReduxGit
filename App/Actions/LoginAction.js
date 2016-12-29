@@ -27,6 +27,18 @@ export function performLoginAction(username, password, navigator) {
         }).done();
     }
 }
+/*通过本地存储获取用户信息*/
+// export function getUserFromStorage() {
+//   return dispatch => {
+//     AsyncStorage.getItem('authrization')
+//       .then(authrization => {
+//         if (authrization) {
+//           authrization = JSON.parse(authrization);
+//           dispatch(setAuthrization(authrization));
+//         }
+//       });
+//   };
+// }
 /*拼接请求登陆地址Url*/
 function loginUrl(username, password) {
     return (BASE_URL + '/user/login/' + username + '/' + password);

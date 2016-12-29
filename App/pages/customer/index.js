@@ -14,8 +14,7 @@ import SearchBar from './searchbar';
 import Nocustomers from './nocustomers';
 import Customercell from './customercell';
 import CustomerDetail from './customerdetail';
-var API_URL = 'http://221.208.194.214:8084/';
-var API_KEYS = ['7waqfqbprs7pajbz28mqf6vz'];
+import {BASE_URL} from '../../common/Config';
 var resultsCache = {
     dataForQuery: {},
     nextPageNumberForQuery: {},
@@ -32,20 +31,22 @@ export default class Customer extends Component {
                 rowHasChanged: (row1, row2) => row1 !== row2
             }),
             filter: '',
-            queryNumber: 0
+            queryNumber: 0,
+            userid: 1
         };
     }
     /**
      * 待dom加载完成开始执行
      */
     componentDidMount() {
-        this.searchCustomers('');
+        //用Id－查询内容
+        this.searchCustomers(1, '');
     }
     /**
      * 真正的客户搜索方法
      */
     getDataSource(customers) : ListView.DataSource {return this.state.dataSource.cloneWithRows(customers);}
-    searchCustomers(query) {
+    searchCustomers(userid, query) {
         //设置查询字符更新customerContent
         this.setState({filter: query});
         var cachedResultsForQuery = resultsCache.dataForQuery[query];
@@ -65,14 +66,16 @@ export default class Customer extends Component {
             isLoadingTail: false
         });
         //网络请求
-        fetch(this.urlForQueryAndPage(query, 1)).then((r) => r.json()).catch((error) => {
+        console.log(this.urlForQueryAndPage(userid, 1, query));
+        fetch(this.urlForQueryAndPage(userid, 1, query)).then((r) => r.json()).catch((error) => {
             LOADING[query] = false;
             resultsCache.dataForQuery[query] = undefined;
             this.setState({dataSource: this.getDataSource([]), isLoading: false});
         }).then((rj) => {
             LOADING[query] = false;
-            resultsCache.totalForQuery[query] = rj.total;
-            resultsCache.dataForQuery[query] = rj.customers;
+            console.log(rj);
+            resultsCache.totalForQuery[query] = rj.result.total;
+            resultsCache.dataForQuery[query] = rj.result.customers;
             resultsCache.nextPageNumberForQuery[query] = 2;
             if (this.state.filter !== query) {
                 // do not update state if the query is stale
@@ -80,7 +83,7 @@ export default class Customer extends Component {
             }
             this.setState({
                 isLoading: false,
-                dataSource: this.getDataSource(rj.customers)
+                dataSource: this.getDataSource(rj.result.customers)
             });
         }).done();
     }
@@ -90,7 +93,7 @@ export default class Customer extends Component {
     onSearchChange(event) {
         var filter = event.nativeEvent.text.toLowerCase();
         this.timer && clearTimeout(this.timer);
-        this.timer = setTimeout(() => this.searchCustomers(filter), 500);
+        this.timer = setTimeout(() => this.searchCustomers(1, filter), 500);
     }
     renderFooter() {
         if (!this.hasMore() || !this.state.isLoadingTail) {
@@ -107,6 +110,7 @@ export default class Customer extends Component {
     }
     onEndReached() {
         var query = this.state.filter;
+        var userid = this.state.userid;
         if (!this.hasMore() || this.state.isLoadingTail) {
             // We're already fetching or have all the elements so noop
             return;
@@ -121,7 +125,8 @@ export default class Customer extends Component {
         });
         var page = resultsCache.nextPageNumberForQuery[query];
         //(page != null, 'Next page number for "%s" is missing', query);
-        fetch(this.urlForQueryAndPage(query, page)).then((response) => response.json()).catch((error) => {
+        console.log(this.urlForQueryAndPage(userid, query, page));
+        fetch(this.urlForQueryAndPage(userid, page, query)).then((response) => response.json()).catch((error) => {
             console.error(error);
             LOADING[query] = false;
             this.setState({isLoadingTail: false});
@@ -129,11 +134,11 @@ export default class Customer extends Component {
             var moviesForQuery = resultsCache.dataForQuery[query].slice();
             LOADING[query] = false;
             // We reached the end of the list before the expected number of results
-            if (!responseData.customers) {
+            if (!responseData.result.customers) {
                 resultsCache.totalForQuery[query] = moviesForQuery.length;
             } else {
-                for (var i in responseData.customers) {
-                    moviesForQuery.push(responseData.customers[i]);
+                for (var i in responseData.result.customers) {
+                    moviesForQuery.push(responseData.result.customers[i]);
                 }
                 resultsCache.dataForQuery[query] = moviesForQuery;
                 resultsCache.nextPageNumberForQuery[query] += 1;
@@ -170,13 +175,8 @@ export default class Customer extends Component {
     /**
      * customerContent内容获取的url地址
      */
-    urlForQueryAndPage(query, pageNumber) {
-        if (query) {
-            return (API_URL + 'api/customer/get/' + encodeURIComponent(query) + '/' + pageNumber);
-        } else {
-            // With no query, load latest movies
-            return (API_URL + 'api/customer/getall');
-        }
+    urlForQueryAndPage(userId, pageNumber, query) {
+        return (BASE_URL + 'customer/query/' + userId + '/' + pageNumber + '/' + encodeURIComponent(query));
     }
     /**
      * ListView每一行数据展示

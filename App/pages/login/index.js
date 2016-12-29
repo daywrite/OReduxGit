@@ -29,6 +29,9 @@ class Index extends Component {
     constructor(props) {
         super(props);
     }
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps);
+    }
     _login() {
         const {navigator, dispatch} = this.props;
         if (username === '') {
