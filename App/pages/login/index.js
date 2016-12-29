@@ -22,15 +22,24 @@ import Register from './register';
 import Loading from '../../component/Loading_DD';
 import {connect} from 'react-redux';
 import {performLoginAction} from '../../Actions/LoginAction';
+import {toastShort} from '../../utils/ToastUtil';
+var username = '';
+var password = '';
 class Index extends Component {
     constructor(props) {
         super(props);
-        this.username = '';
-        this.password = '';
     }
     _login() {
         const {navigator, dispatch} = this.props;
-        dispatch(performLoginAction('13301160072', '123456', navigator));
+        if (username === '') {
+            toastShort('用户名不能为空');
+            return;
+        }
+        if (password === '') {
+            toastShort('密码不能为空');
+            return;
+        }
+        dispatch(performLoginAction(username, password, navigator));
     }
     _loginSuccess() {
         const {navigator} = this.props;
@@ -56,11 +65,11 @@ class Index extends Component {
                 <View style={styles.inputs}>
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputUsername} source={USER_ICON}/>
-                        <TextInput style={[styles.input, styles.whiteFont]} placeholder="手机号／QQ号／邮箱" placeholderTextColor="#FFF"/>
+                        <TextInput style={[styles.input, styles.whiteFont]} placeholder="手机号／QQ号／邮箱" placeholderTextColor="#FFF" onChangeText={text => username = text}/>
                     </View>
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputPassword} source={PWD_ICON}/>
-                        <TextInput password={true} style={[styles.input, styles.whiteFont]} placeholder="密码" placeholderTextColor="#FFF"/>
+                        <TextInput password={true} style={[styles.input, styles.whiteFont]} placeholder="密码" placeholderTextColor="#FFF" onChangeText={text => password = text}/>
                     </View>
                     <View style={styles.forgotContainer}>
                         <Text style={styles.greyFont}>忘记密码？</Text>

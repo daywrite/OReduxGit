@@ -5,6 +5,7 @@
 import * as types from '../common/ActionTypes';
 import {BASE_URL} from '../common/Config';
 import Home from '../pages/home/index';
+import {toastShort} from '../utils/ToastUtil';
 export function performLoginAction(username, password, navigator) {
     return dispatch => {
         //显示加载中...
@@ -12,11 +13,17 @@ export function performLoginAction(username, password, navigator) {
         //请求登陆
         fetch(loginUrl(username, password)).then((response) => response.json()).then((responseData) => {
             console.log(responseData);
-            if (navigator) {
-                navigator.push({name: '', navigationBarHidden: true, component: Home})
+            if (responseData.code === 0) {
+                if (navigator) {
+                    navigator.push({name: '', navigationBarHidden: true, component: Home})
+                }
+                //关闭显示中，并返回结构
+                dispatch(receiveLoginResult(responseData));
+            } else {
+                toastShort('用户名或密码错误');
+                dispatch(receiveLoginResult(responseData));
+                return;
             }
-            //关闭显示中，并返回结构
-            dispatch(receiveLoginResult(responseData));
         }).done();
     }
 }
