@@ -9,9 +9,7 @@ class Splash extends React.Component {
     componentDidMount() {
         const {navigator} = this.props;
         this.timer = setTimeout(() => {
-            InteractionManager.runAfterInteractions(() => {
-                navigator.resetTo({component: AppMain, name: 'AppMain'});
-            });
+            navigator.resetTo({component: AppMain, name: 'AppMain', navigationBarHidden: true});
         }, 2500);
     }
     componentWillUnmount() {
