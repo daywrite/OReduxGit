@@ -4,13 +4,17 @@
 'use strict';
 import * as types from '../common/ActionTypes';
 import {BASE_URL} from '../common/Config';
-export function performLoginAction(username, password) {
+import Home from '../pages/home/index';
+export function performLoginAction(username, password, navigator) {
     return dispatch => {
         //显示加载中...
         dispatch(performLogin());
         //请求登陆
-        fetch(loginUrl(username, password)).then((responseData) => {
+        fetch(loginUrl(username, password)).then((response) => response.json()).then((responseData) => {
             console.log(responseData);
+            if (navigator) {
+                navigator.push({name: '', navigationBarHidden: true, component: Home})
+            }
             //关闭显示中，并返回结构
             dispatch(receiveLoginResult(responseData));
         }).done();
