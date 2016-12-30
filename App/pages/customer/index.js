@@ -8,7 +8,8 @@ import {
     ListView,
     Platform,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    AsyncStorage
 } from 'react-native';
 import SearchBar from './searchbar';
 import Nocustomers from './nocustomers';
@@ -21,6 +22,7 @@ var resultsCache = {
     totalForQuery: {}
 };
 var LOADING = {};
+var userId = '0';
 export default class Customer extends Component {
     constructor(props) {
         super(props);
@@ -31,8 +33,7 @@ export default class Customer extends Component {
                 rowHasChanged: (row1, row2) => row1 !== row2
             }),
             filter: '',
-            queryNumber: 0,
-            userid: 1
+            queryNumber: 0
         };
     }
     /**
@@ -40,7 +41,12 @@ export default class Customer extends Component {
      */
     componentDidMount() {
         //用Id－查询内容
-        this.searchCustomers(1, '');
+        console.log('获取authId');
+        AsyncStorage.getItem('authId').then((data, error) => {
+            userId = data;
+            console.log(userId);
+            this.searchCustomers(userId, '')
+        });;
     }
     /**
      * 真正的客户搜索方法
@@ -49,15 +55,15 @@ export default class Customer extends Component {
     searchCustomers(userid, query) {
         //设置查询字符更新customerContent
         this.setState({filter: query});
-        var cachedResultsForQuery = resultsCache.dataForQuery[query];
-        if (cachedResultsForQuery) {
-            if (!LOADING[query]) {
-                this.setState({dataSource: this.getDataSource(cachedResultsForQuery), isLoading: false});
-            } else {
-                this.setState({isLoading: true});
-            }
-            return;
-        }
+        // var cachedResultsForQuery = resultsCache.dataForQuery[query];
+        // if (cachedResultsForQuery) {
+        //     if (!LOADING[query]) {
+        //         this.setState({dataSource: this.getDataSource(cachedResultsForQuery), isLoading: false});
+        //     } else {
+        //         this.setState({isLoading: true});
+        //     }
+        //     return;
+        // }
         LOADING[query] = true;
         resultsCache.dataForQuery[query] = null;
         this.setState({
@@ -66,7 +72,7 @@ export default class Customer extends Component {
             isLoadingTail: false
         });
         //网络请求
-        console.log(this.urlForQueryAndPage(userid, 1, query));
+        //console.log(this.urlForQueryAndPage(userid, 1, query));
         fetch(this.urlForQueryAndPage(userid, 1, query)).then((r) => r.json()).catch((error) => {
             LOADING[query] = false;
             resultsCache.dataForQuery[query] = undefined;
@@ -93,7 +99,7 @@ export default class Customer extends Component {
     onSearchChange(event) {
         var filter = event.nativeEvent.text.toLowerCase();
         this.timer && clearTimeout(this.timer);
-        this.timer = setTimeout(() => this.searchCustomers(1, filter), 500);
+        this.timer = setTimeout(() => this.searchCustomers(userId, filter), 500);
     }
     renderFooter() {
         if (!this.hasMore() || !this.state.isLoadingTail) {
@@ -110,7 +116,7 @@ export default class Customer extends Component {
     }
     onEndReached() {
         var query = this.state.filter;
-        var userid = this.state.userid;
+        var userid = userId;
         if (!this.hasMore() || this.state.isLoadingTail) {
             // We're already fetching or have all the elements so noop
             return;
@@ -125,7 +131,7 @@ export default class Customer extends Component {
         });
         var page = resultsCache.nextPageNumberForQuery[query];
         //(page != null, 'Next page number for "%s" is missing', query);
-        console.log(this.urlForQueryAndPage(userid, query, page));
+        //console.log(this.urlForQueryAndPage(userid, query, page));
         fetch(this.urlForQueryAndPage(userid, page, query)).then((response) => response.json()).catch((error) => {
             console.error(error);
             LOADING[query] = false;

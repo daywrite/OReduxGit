@@ -10,7 +10,8 @@ import {
     View,
     Platform,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    AsyncStorage
 } from 'react-native';
 import Login from '../login/index';
 export default class Header extends Component {
@@ -20,6 +21,7 @@ export default class Header extends Component {
     logout() {
         const {navigator} = this.props;
         if (navigator) {
+            AsyncStorage.removeItem('authId')
             this.props.navigator.popToTop();
         }
     }

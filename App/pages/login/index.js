@@ -10,7 +10,8 @@ import {
     TouchableOpacity,
     Platform,
     NavigatorIOS,
-    InteractionManager
+    InteractionManager,
+    AsyncStorage
 } from 'react-native';
 var windowSize = Dimensions.get('window');
 const LOGIN_BG = require('../../imgs/login/login-bg.jpg');
@@ -30,7 +31,14 @@ class Index extends Component {
         super(props);
     }
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps);
+        console.log('设置authId');
+        let {login} = nextProps;
+        console.log(login);
+        if (login.data.code === 0) {
+            let id = login.data.result.Id;
+            console.log(id);
+            AsyncStorage.setItem('authId', id.toString())
+        }
     }
     _login() {
         const {navigator, dispatch} = this.props;
@@ -58,7 +66,7 @@ class Index extends Component {
     }
     render() {
         const {login} = this.props;
-        console.log(login);
+        //console.log(login);
         return (
             <View style={styles.container}>
                 <Image style={styles.bg} source={LOGIN_BG}/>
