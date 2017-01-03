@@ -46,7 +46,7 @@ export default class Customer extends Component {
             userId = data;
             console.log(userId);
             this.searchCustomers(userId, '')
-        });;
+        });
     }
     /**
      * 真正的客户搜索方法
