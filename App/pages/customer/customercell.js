@@ -21,7 +21,9 @@ export default class customercell extends Component {
         }
         return (
             <View>
-                <TouchableElement onPress={this.props.onSelect} onShowUnderlay={this.props.onHighlight} onHideUnderlay={this.props.onUnhighlight}>
+                <TouchableElement onPress={this.props.onSelect} delayLongPress={2000} onLongPress={() => {
+                    alert(1)
+                }} onShowUnderlay={this.props.onHighlight} onHideUnderlay={this.props.onUnhighlight}>
                     <View style={styles.row}>
                         <Image source={HOUSE} style={styles.cellImage}/>
                         <View style={styles.textContainer}>

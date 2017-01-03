@@ -74,19 +74,19 @@ export default class createcustomer extends Component {
                             var nameVaule = GiftedFormManager.getValue('signupForm', 'name');
                             var telphoneVaule = GiftedFormManager.getValue('signupForm', 'telphone');
                             AsyncStorage.getItem('authId').then((data, error) => {
-                                let formData = {
+                                let sdata = {
                                     "Name": nameVaule,
                                     "TelPhone": telphoneVaule,
                                     "PicUrl": "",
                                     "UserId": data
                                 };
-                                console.log(formData);
+                                console.log(sdata);
                                 let headers = {
                                     'Accept': 'application/json',
                                     'Content-Type': 'application/json'
                                 };
                                 const {navigator, dispatch} = this.props;
-                                HTTPUtil.post(this.createUrl(), JSON.stringify(formData), headers).then((json) => {
+                                HTTPUtil.post(this.createUrl(), JSON.stringify(sdata), headers).then((json) => {
                                     if (json.code === 0) {
                                         this.refs.toast.show("添加成功");
                                         postSubmit();
