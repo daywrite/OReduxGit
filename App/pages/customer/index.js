@@ -16,6 +16,8 @@ import Nocustomers from './nocustomers';
 import Customercell from './customercell';
 import CustomerDetail from './customerdetail';
 import {BASE_URL} from '../../common/Config';
+import HTTPUtil from '../../utils/HttpUtil';
+import Toast, {DURATION} from 'react-native-easy-toast';
 var resultsCache = {
     dataForQuery: {},
     nextPageNumberForQuery: {},
@@ -55,7 +57,7 @@ export default class Customer extends Component {
     searchCustomers(userid, query) {
         //设置查询字符更新customerContent
         this.setState({filter: query});
-        // var cachedResultsForQuery = resultsCache.dataForQuery[query];
+        //var cachedResultsForQuery = resultsCache.dataForQuery[query];
         // if (cachedResultsForQuery) {
         //     if (!LOADING[query]) {
         //         this.setState({dataSource: this.getDataSource(cachedResultsForQuery), isLoading: false});
@@ -66,6 +68,7 @@ export default class Customer extends Component {
         // }
         LOADING[query] = true;
         resultsCache.dataForQuery[query] = null;
+        cachedResultsForQuery = null;
         this.setState({
             isLoading: true,
             queryNumber: this.state.queryNumber + 1,
@@ -82,6 +85,8 @@ export default class Customer extends Component {
             console.log(rj);
             resultsCache.totalForQuery[query] = rj.result.total;
             resultsCache.dataForQuery[query] = rj.result.customers;
+            //为了删除
+            cachedResultsForQuery = rj.result.customers;
             resultsCache.nextPageNumberForQuery[query] = 2;
             if (this.state.filter !== query) {
                 // do not update state if the query is stale
@@ -188,7 +193,29 @@ export default class Customer extends Component {
      * ListView每一行数据展示
      */
     renderRow(rowData, sectionID, rowID, highlightRow) {
-        return (<Customercell model={rowData} onSelect={() => this.selectCustomer(rowData)} onHighlight={() => highlightRow(sectionID, rowID)} onUnhighlight={() => highlightRow(null, null)}/>);
+        return (<Customercell model={rowData} onDelete={() => this.deleteCustomer(rowData, rowID)} onSelect={() => this.selectCustomer(rowData)} onHighlight={() => highlightRow(sectionID, rowID)} onUnhighlight={() => highlightRow(null, null)}/>);
+    }
+    deleteCustomer(rowData, rowID) {
+        delete cachedResultsForQuery[rowID];
+        this.setState({dataSource: this.getDataSource(cachedResultsForQuery)});
+        let formData = {
+            "Id": rowData.Id
+        };
+        let headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        };
+        console.log(formData);
+        HTTPUtil.post(BASE_URL + '/customer/delete', JSON.stringify(formData), headers).then((json) => {
+            if (json.code === 0) {
+                this.refs.toast.show("删除成功");
+            } else {
+                this.refs.toast.show("删除失败");
+            }
+        }, (json) => {
+            console.log(json);
+            this.refs.toast.show("联系管理员");
+        });
     }
     selectCustomer(model) {
         const {navigator} = this.props;
@@ -204,6 +231,7 @@ export default class Customer extends Component {
                 <SearchBar onSearchChange={this.onSearchChange.bind(this)} isLoading={this.state.isLoading} onFocus={() => this.refs.listview && this.refs.listview.getScrollResponder().scrollTo({x: 0, y: 0})}/>
                 <View style={styles.separator}></View>
                 {this.customerContent()}
+                <Toast ref="toast" position='center'/>
             </View>
         );
     }

@@ -44,15 +44,15 @@ const styles = StyleSheet.create({
     logout: {
         height: 40,
         borderWidth: 1,
-        borderColor: '#CFCFCF',
+        borderColor: '#d74047',
         margin: 10,
-        borderRadius: 5,
+        //borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: '#d74047'
     },
     text: {
         fontSize: 16,
-        color: '#d74047'
+        color: 'white'
     }
 });
