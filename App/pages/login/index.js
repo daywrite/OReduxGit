@@ -42,7 +42,7 @@ class Index extends Component {
         console.log('shouldComponentUpdate');
         this.refs.pwd.clear();
         password = '';
-        return false;
+        return true;
     }
     componentWillUpdate() {
         console.log('componentWillUpdate');

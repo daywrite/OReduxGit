@@ -9,7 +9,8 @@ import {
     Platform,
     ActivityIndicator,
     TouchableOpacity,
-    AsyncStorage
+    AsyncStorage,
+    Alert
 } from 'react-native';
 import SearchBar from './searchbar';
 import Nocustomers from './nocustomers';
@@ -193,7 +194,22 @@ export default class Customer extends Component {
      * ListView每一行数据展示
      */
     renderRow(rowData, sectionID, rowID, highlightRow) {
-        return (<Customercell model={rowData} onDelete={() => this.deleteCustomer(rowData, rowID)} onSelect={() => this.selectCustomer(rowData)} onHighlight={() => highlightRow(sectionID, rowID)} onUnhighlight={() => highlightRow(null, null)}/>);
+        return (<Customercell model={rowData} onDelete={() => Alert.alert('温馨提醒', '确定删除吗?', [
+            {
+                text: '取消',
+                onPress: () => {
+                    this.canle()
+                }
+            }, {
+                text: '确定',
+                onPress: () => {
+                    this.deleteCustomer(rowData, rowID)
+                }
+            }
+        ])} onSelect={() => this.selectCustomer(rowData)} onHighlight={() => highlightRow(sectionID, rowID)} onUnhighlight={() => highlightRow(null, null)}/>);
+    }
+    canle() {
+        this.refs.toast.show("未删除");
     }
     deleteCustomer(rowData, rowID) {
         delete cachedResultsForQuery[rowID];
