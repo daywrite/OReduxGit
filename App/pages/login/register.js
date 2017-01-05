@@ -26,6 +26,10 @@ class Register extends Component {
     constructor(props) {
         super(props)
     }
+    componentWillMount()
+    {
+        GiftedFormManager.reset('signupForm');
+    }
     _preSubmit() {}
     createUrl() {
         return (BASE_URL + 'user/create');

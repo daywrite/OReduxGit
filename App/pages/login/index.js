@@ -19,6 +19,7 @@ const LOGIN_HEADER = require('../../imgs/login/login-header.png');
 const USER_ICON = require('../../imgs/login/login-user-icon.png');
 const PWD_ICON = require('../../imgs/login/login-password-icon.png');
 import Home from '../../pages/home/index';
+import ForgetPassword from './forgetpassword';
 import Register from './register';
 import Loading from '../../component/Loading_DD';
 import {connect} from 'react-redux';
@@ -30,14 +31,43 @@ class Index extends Component {
     constructor(props) {
         super(props);
     }
+    componentWillMount() {
+        console.log('componentWillMount');
+    }
+    componentDidMount() {
+        console.log('componentDidMount');
+    }
+    shouldComponentUpdate()
+    {
+        console.log('shouldComponentUpdate');
+        this.refs.pwd.clear();
+        password = '';
+        return false;
+    }
+    componentWillUpdate() {
+        console.log('componentWillUpdate');
+    }
+    componentDidUpdate() {
+        console.log('componentDidUpdate');
+    }
+    componentWillUnmount()
+    {
+        console.log('componentWillUnmount');
+    }
     componentWillReceiveProps(nextProps) {
         console.log('设置authId');
         let {login} = nextProps;
-        console.log(login);
+        //console.log(login);
         if (login.data.code === 0) {
             let id = login.data.result.Id;
             console.log(id);
             AsyncStorage.setItem('authId', id.toString())
+        }
+    }
+    _forget() {
+        const {navigator, dispatch} = this.props;
+        if (navigator) {
+            navigator.push({name: '', navigationBarHidden: true, component: ForgetPassword})
         }
     }
     _login() {
@@ -76,14 +106,16 @@ class Index extends Component {
                 <View style={styles.inputs}>
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputUsername} source={USER_ICON}/>
-                        <TextInput style={[styles.input, styles.whiteFont]} placeholder="手机号／QQ号／邮箱" placeholderTextColor="#FFF" onChangeText={text => username = text}/>
+                        <TextInput clearButtonMode='always' style={[styles.input, styles.whiteFont]} placeholder="手机号／QQ号／邮箱" placeholderTextColor="#FFF" onChangeText={text => username = text}/>
                     </View>
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputPassword} source={PWD_ICON}/>
-                        <TextInput password={true} style={[styles.input, styles.whiteFont]} placeholder="密码" placeholderTextColor="#FFF" onChangeText={text => password = text}/>
+                        <TextInput ref='pwd' clearButtonMode='always' password={true} style={[styles.input, styles.whiteFont]} placeholder="密码" placeholderTextColor="#FFF" onChangeText={text => password = text}/>
                     </View>
                     <View style={styles.forgotContainer}>
-                        <Text style={styles.greyFont}>忘记密码？</Text>
+                        <TouchableOpacity onPress={this._forget.bind(this)}>
+                            <Text style={styles.greyFont}>忘记密码？</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <TouchableOpacity onPress={this._login.bind(this)}>
