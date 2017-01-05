@@ -10,6 +10,7 @@ import {
     View,
     TouchableOpacity
 } from 'react-native';
+import {BASE_URL} from '../../common/Config';
 const HOUSE = require('../../imgs/commom/Create.png');
 import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view';
 export default class customercell extends Component {
@@ -38,7 +39,9 @@ export default class customercell extends Component {
                             alert(1)
                         }} onShowUnderlay={this.props.onHighlight} onHideUnderlay={this.props.onUnhighlight}>
                             <View style={styles.row}>
-                                <Image source={HOUSE} style={styles.cellImage}/>
+                                <Image source={{
+                                    uri: BASE_URL + 'pic/' + this.props.model.PicUrl
+                                }} style={styles.cellImage}/>
                                 <View style={styles.textContainer}>
                                     <Text style={styles.movieTitle} numberOfLines={2}>
                                         {this.props.model.Name}
