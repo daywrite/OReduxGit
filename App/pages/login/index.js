@@ -81,6 +81,7 @@ class Index extends Component {
             return;
         }
         dispatch(performLoginAction(username, password, navigator));
+        //this._loginSuccess();
     }
     _loginSuccess() {
         const {navigator} = this.props;

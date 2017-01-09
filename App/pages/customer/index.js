@@ -39,6 +39,28 @@ export default class Customer extends Component {
             queryNumber: 0
         };
     }
+    componentWillMount() {
+        console.log('componentWillMount');
+    }
+    shouldComponentUpdate()
+    {
+        console.log('shouldComponentUpdate');
+        return true;
+    }
+    componentWillUpdate() {
+        console.log('componentWillUpdate');
+    }
+    componentDidUpdate() {
+        console.log('componentDidUpdate');
+    }
+    componentWillUnmount()
+    {
+        console.log('componentWillUnmount');
+    }
+    componentWillReceiveProps(nextProps) {
+        this.searchCustomers(userId, '')
+        console.log('componentWillReceiveProps');
+    }
     /**
      * 待dom加载完成开始执行
      */
