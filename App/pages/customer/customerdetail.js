@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     content: {
         marginTop: 20,
         marginLeft: 20,
+        marginRight: 20,
         borderTopWidth: 1,
         borderTopColor: '#d74047',
         paddingTop: 20
