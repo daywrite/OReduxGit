@@ -96,7 +96,8 @@ class Register extends Component {
                                     this.refs.toast.show("注册成功");
                                     dispatch(performLoginAction(usernameVaule, passwordVaule, navigator));
                                 } else {
-                                    console.log(json);
+                                    this.refs.toast.show(json.message);
+                                    postSubmit();
                                 }
                             }, (json) => {
                                 console.log('falie');

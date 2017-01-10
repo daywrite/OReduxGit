@@ -18,7 +18,8 @@ import Login from '../login/index';
 var winWidth = Dimensions.get('window').width;
 import ForgetPassword from '../login/forgetpassword';
 const TELPHONE = require('../../imgs/customer/customer-telphone-icon.png');
-const ARROW = require('../../imgs/commom/arrow_right.png');
+//const ARROW = require('../../imgs/commom/arrow_right.png');
+import MenuItem from './menuitem';
 export default class Header extends Component {
     constructor(props) {
         super(props);
@@ -39,19 +40,9 @@ export default class Header extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={this.connect.bind(this)}>
-                    <View style={styles.body}>
-                        <View style={styles.linkicon}>
-                            <Image source={TELPHONE} style={styles.telphone}/>
-                        </View>
-                        <View style={styles.linktext}>
-                            <Text>联系我</Text>
-                        </View>
-                        <View style={styles.linkright}>
-                            <Image source={ARROW} style={styles.arrow}/>
-                        </View>
-                    </View>
-                </TouchableOpacity>
+                <MenuItem title='联系我' icon={TELPHONE} margin2Top='1' onClick={this.connect.bind(this)}/>
+                <MenuItem title='找回密码' icon={TELPHONE} margin2Top='1' onClick={this.connect.bind(this)}/>
+                <MenuItem title='找回密码' icon={TELPHONE} margin2Top='1' onClick={this.connect.bind(this)}/>
                 <TouchableOpacity onPress={this.logout.bind(this)}>
                     <View style={styles.logout}>
                         <Text style={styles.text}>退出登陆</Text>
@@ -63,7 +54,7 @@ export default class Header extends Component {
 }
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
+        backgroundColor: '#f5f5f5',
         flex: 1
     },
     linkicon: {
